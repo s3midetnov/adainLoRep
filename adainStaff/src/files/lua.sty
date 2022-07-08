@@ -1,0 +1,18 @@
+\usepackage{luacode}
+\begin{luacode}
+function suppl_math_kerning ( s )
+    -- T_pM correction
+    s = s:gsub("T%s-_%s-p%s-(%a)", "T_p\\mkern+1mu %1")
+    -- Subscript combinations
+    -- T
+    s = s:gsub("T%s-_%s-(%b{})", "T_{\\mkern+1.5mu %1}")
+    s = s:gsub("T%s-_%s-(%w)", "T_{\\mkern+1.5mu %1}")
+    s = s:gsub("T%s-_%s-(\\%w+)", "T_{\\mkern+1.5mu %1}")
+    return s
+end
+\end{luacode}
+
+\newcommand\SupplKernOn{\directlua{luatexbase.add_to_callback (
+	"process_input_buffer" , suppl_math_kerning , "suppl_math_kerning" ) }}
+\newcommand\SupplKernOff{\directlua{luatexbase.remove_from_callback (
+	"process_input_buffer" , "suppl_math_kerning" ) }}
